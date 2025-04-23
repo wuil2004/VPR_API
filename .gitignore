@@ -1,0 +1,32 @@
+# Ignorar entorno virtual llamado VPR
+/VPR/
+
+# Archivos de Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# Configuración de VSCode
+.vscode/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Archivos temporales
+*.tmp
+*.pid
+
+# Carpetas de distribución
+*.egg-info/
+dist/
+build/
+
+# Subidas temporales (si aplican)
+uploads/
+media/
