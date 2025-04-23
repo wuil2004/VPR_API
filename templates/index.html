@@ -1,51 +1,57 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Solución de Ruteo de Vehículos</title>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        #map { height: 500px; margin-top: 20px; }
-        form { margin-bottom: 20px; }
-    </style>
+    <meta charset="UTF-8">
+    <title>Calculadora de Rutas VRP</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>Optimización de Rutas (VRP)</h1>
-    <form method="post">
-        <label>Ciudad de Origen:
-            <select name="origen" required>
-                <option value="CDMX">CDMX</option>
-                <option value="EDO.MEX">EDO.MEX</option>
-                <option value="QRO">QRO</option>
-                <option value="SLP">SLP</option>
-                <option value="MTY">MTY</option>
-                <option value="PUE">PUE</option>
-                <option value="GDL">GDL</option>
-                <option value="MICH">MICH</option>
-                <option value="SON">SON</option>
-            </select>
-        </label><br><br>
-        <label>Máximo de paquetes: <input type="number" name="max_paquetes" required></label><br><br>
-        <label>Máxima distancia: <input type="number" step="0.1" name="max_distancia" required></label><br><br>
-        <label>Máximo de gasolina (Lts): <input type="number" step="0.1" name="max_gasolina" required></label><br><br>
-        <button type="submit">Generar rutas</button>
-    </form>
+<div class="container">
+    <h1>Calculadora de Rutas VRP</h1>
 
-    {% if rutas %}
-        <h2>Rutas generadas:</h2>
-        <ul>
-        {% for ruta in rutas %}
-            <li>{{ ruta }}</li>
-        {% endfor %}
-        </ul>
-        <div id="map"></div>
-        <script>
-            const rutas = {{ rutas|tojson }};
-        </script>
-        <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
-        <script src="/static/map.js"></script>
-    {% endif %}
+    <label for="almacen">Ciudad de partida:</label>
+    <select id="almacen">
+        <option value="EDO.MEX">EDO.MEX</option>
+        <option value="QRO">QRO</option>
+        <option value="CDMX">CDMX</option>
+        <option value="SLP">SLP</option>
+        <option value="MTY">MTY</option>
+        <option value="PUE">PUE</option>
+        <option value="GDL">GDL</option>
+        <option value="MICH">MICH</option>
+        <option value="SON">SON</option>
+    </select>
+
+    <label for="ciudades">Ciudades a visitar:</label>
+    <select id="ciudades" multiple size="6">
+        <option value="EDO.MEX">EDO.MEX</option>
+        <option value="QRO">QRO</option>
+        <option value="CDMX">CDMX</option>
+        <option value="SLP">SLP</option>
+        <option value="MTY">MTY</option>
+        <option value="PUE">PUE</option>
+        <option value="GDL">GDL</option>
+        <option value="MICH">MICH</option>
+        <option value="SON">SON</option>
+    </select>
+
+    <label for="max_carga">Máx. carga:</label>
+    <input type="number" id="max_carga" value="40">
+
+    <label for="max_litros">Máx. litros:</label>
+    <input type="number" id="max_litros" value="100">
+
+    <label for="max_distancia">Máx. distancia:</label>
+    <input type="number" id="max_distancia" value="20">
+
+    <label for="litros_por_km">Litros por km:</label>
+    <input type="number" step="0.1" id="litros_por_km" value="0.2">
+
+    <button onclick="calcularRutas()">Calcular rutas</button>
+
+    <div class="resultado" id="resultado"></div>
+</div>
+
+<script src="{{ url_for('static', filename='main.js') }}"></script>
 </body>
 </html>
