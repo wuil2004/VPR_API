@@ -4,7 +4,6 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import math
 from typing import Optional
-from operator import itemgetter
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -22,6 +21,7 @@ coord = {
     'MICH': (19.7026, -101.1922),
     'SON': (29.0752, -110.9596)
 }
+
 pedidos = {
     'EDO.MEX': 10, 'QRO': 13, 'CDMX': 7, 'SLP': 11,
     'MTY': 15, 'PUE': 8, 'GDL': 6, 'MICH': 7, 'SON': 8
@@ -30,33 +30,28 @@ pedidos = {
 def distancia(coord1, coord2):
     return math.sqrt((coord1[0] - coord2[0]) ** 2 + (coord1[1] - coord2[1]) ** 2)
 
-def en_ruta(rutas, c):
-    for r in rutas:
-        if c in r:
-            return r
-    return None
-
 def peso_ruta(ruta):
     return sum(pedidos[c] for c in ruta)
 
 def distancia_ruta_con_destino(ruta, origen, destino):
-    total = distancia(origen, coord[ruta[0]])  # origen debe ser un nombre de ciudad
+    total = distancia(origen, coord[ruta[0]])
     for i in range(len(ruta) - 1):
         total += distancia(coord[ruta[i]], coord[ruta[i + 1]])
-    total += distancia(coord[ruta[-1]], destino)  # destino debe ser un nombre de ciudad
+    total += distancia(coord[ruta[-1]], destino)
     return total
 
-def consumo_gasolina(distancia):
-    return distancia / 10  # 10 km por litro
+def consumo_gasolina(distancia, rendimiento):
+    return distancia / rendimiento if rendimiento > 0 else float('inf')
 
-def vrp_voraz_con_destino(origen, intermedias, destino, max_carga, max_distancia, max_gasolina):
+def vrp_voraz_con_destino(origen, intermedias, destino, max_carga, max_distancia, max_gasolina, rendimiento):
     ciudades_ruta = [origen] + intermedias + [destino]
     rutas = []
 
     for i in range(len(ciudades_ruta) - 1):
         ruta = [ciudades_ruta[i], ciudades_ruta[i + 1]]
         dist = distancia_ruta_con_destino(ruta, coord[origen], coord[destino])
-        if dist <= max_distancia:
+        gas = consumo_gasolina(dist, rendimiento)
+        if dist <= max_distancia and gas <= max_gasolina:
             rutas.append(ruta)
 
     return rutas
@@ -72,20 +67,19 @@ def form(request: Request):
 async def generar_rutas(
     request: Request,
     origen: str = Form(...),
-    intermedias: Optional[list[str]] = Form([], alias="intermedias"),  # Asignamos valor predeterminado con Optional
+    intermedias: Optional[list[str]] = Form([], alias="intermedias"),
     destino: str = Form(...),
     max_carga: int = Form(...),
     max_distancia: float = Form(...),
-    max_gasolina: float = Form(...)
+    max_gasolina: float = Form(...),
+    rendimiento: float = Form(...)
 ):
-    print(f"Origen: {origen}, Intermedias: {intermedias}, Destino: {destino}")
-    
-    rutas = vrp_voraz_con_destino(origen, intermedias, destino, max_carga, max_distancia, max_gasolina)
+    rutas = vrp_voraz_con_destino(origen, intermedias, destino, max_carga, max_distancia, max_gasolina, rendimiento)
 
     resultados = []
     for i, ruta in enumerate(rutas, 1):
         dist = distancia_ruta_con_destino(ruta, coord[origen], coord[destino])
-        gas = consumo_gasolina(dist)
+        gas = consumo_gasolina(dist, rendimiento)
         resultados.append({
             "id": i,
             "ruta": ruta,
@@ -103,5 +97,6 @@ async def generar_rutas(
         "intermedias": intermedias,
         "max_carga": max_carga,
         "max_distancia": max_distancia,
-        "max_gasolina": max_gasolina
+        "max_gasolina": max_gasolina,
+        "rendimiento": rendimiento
     })

@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -45,6 +46,10 @@
             <label class="campo">
                 Máxima gasolina:
                 <input name="max_gasolina" type="number" step="0.1" required class="entrada" value="{{ max_gasolina }}" />
+            </label>
+            <label class="campo">
+                Rendimiento del vehículo (km por litro):
+                <input name="rendimiento" type="number" step="0.1" required class="entrada" value="{{ rendimiento or 10 }}" />
             </label>
             <button class="boton">Generar rutas</button>
         </form>
