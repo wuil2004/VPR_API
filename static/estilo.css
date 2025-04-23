@@ -1,0 +1,135 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+body.pagina {
+    background-size: cover;
+    background-image: url('https://static.vecteezy.com/system/resources/previews/004/845/240/non_2x/gps-pin-background-on-map-city-route-travel-and-signal-on-the-application-free-photo.jpg');
+    background-attachment: fixed;
+    background-position: center;
+    margin: 0;
+    padding: 0;
+    color: #2c3e50;
+    font-family: 'Inter', sans-serif;
+}
+
+body::before {
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(8px);
+    z-index: -1;
+    content: '';
+}
+
+.contenedor {
+    margin: 60px auto;
+    padding: 48px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.8s ease forwards;
+    border: 1px solid #e3e3e3;
+    max-width: 860px;
+}
+
+.titulo {
+    font-weight: 600;
+    margin-bottom: 32px;
+    color: #1c1c1c;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 12px;
+    font-size: 2.5rem;
+}
+
+.subtitulo {
+    font-weight: 600;
+    margin-top: 48px;
+    color: #34495e;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 8px;
+    font-size: 1.75rem;
+}
+
+.formulario {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    font-size: 1rem;
+    color: #2c3e50;
+}
+
+.entrada {
+    margin-top: 8px;
+    padding: 12px 14px;
+    border: 1px solid #bbb;
+    border-radius: 12px;
+    font-size: 1rem;
+    background-color: #ffffff;
+    transition: border 0.3s ease, box-shadow 0.2s ease;
+}
+
+.entrada:focus {
+    border-color: #e74c3c;
+    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
+    outline: none;
+}
+
+.boton {
+    align-self: flex-start;
+    background-color: #e74c3c;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 14px 28px;
+    border: none;
+    border-radius: 10px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    cursor: pointer;
+}
+
+.boton:hover {
+    background-color: #c0392b;
+    transform: scale(1.03);
+}
+
+.lista-rutas {
+    list-style: none;
+    padding: 0;
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.ruta {
+    padding: 20px;
+    background-color: #fafafa;
+    border: 1px solid #e3e3e3;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    font-size: 0.98rem;
+    line-height: 1.6;
+    transition: transform 0.3s ease;
+}
+
+.ruta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* Animación de aparición */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}

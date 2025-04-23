@@ -1,50 +1,51 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Planificador de Rutas</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/static/estilo.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
-<body class="bg-gray-100 text-gray-800">
-    <div class="max-w-3xl mx-auto p-6 bg-white shadow-xl rounded mt-10">
-    <h1 class="text-2xl font-bold mb-4">Planificador de Rutas</h1>
-    <form method="post" action="/rutas" class="space-y-4">
-        <label class="block">
+<body class="pagina">
+    <div class="contenedor animar">
+    <h1 class="titulo">Planificador de Rutas</h1>
+    <form method="post" action="/rutas" class="formulario">
+        <label class="campo">
         Ciudad de Origen:
-        <select name="origen" class="border p-2 rounded w-full">
+        <select name="origen" class="entrada">
             {% for ciudad in ciudades %}
             <option value="{{ ciudad }}">{{ ciudad }}</option>
             {% endfor %}
         </select>
         </label>
-        <label class="block">
+        <label class="campo">
         Máximo de paquetes:
-        <input name="max_carga" type="number" required class="border p-2 rounded w-full" />
+        <input name="max_carga" type="number" required class="entrada" />
         </label>
-        <label class="block">
+        <label class="campo">
         Máxima distancia:
-        <input name="max_distancia" type="number" step="0.1" required class="border p-2 rounded w-full" />
+        <input name="max_distancia" type="number" step="0.1" required class="entrada" />
         </label>
-        <label class="block">
+        <label class="campo">
         Máxima gasolina:
-        <input name="max_gasolina" type="number" step="0.1" required class="border p-2 rounded w-full" />
+        <input name="max_gasolina" type="number" step="0.1" required class="entrada" />
         </label>
-        <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Generar rutas</button>
+        <button class="boton">Generar rutas</button>
     </form>
 
     {% if resultados %}
-        <h2 class="text-xl font-semibold mt-8">Rutas Generadas:</h2>
-        <ul class="mt-4 space-y-4">
+        <h2 class="subtitulo">Rutas Generadas:</h2>
+        <ul class="lista-rutas">
         {% for r in resultados %}
-        <li class="border p-4 rounded shadow-sm">
+        <li class="ruta">
             <strong>Ruta {{ r.id }}:</strong> {{ r.ruta }}<br/>
             Peso: {{ r.peso }}<br/>
             Distancia: {{ r.distancia }}<br/>
             Gasolina: {{ r.gasolina }} Lts
         </li>
         {% endfor %}
-    </ul>
+        </ul>
     {% endif %}
-</div>
+    </div>
 </body>
 </html>
