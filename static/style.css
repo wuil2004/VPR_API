@@ -1,62 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
 body {
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(to right, #e0c3fc, #8ec5fc);
+    background-size: cover;
+    background-image: url('https://static.vecteezy.com/system/resources/previews/004/845/240/non_2x/gps-pin-background-on-map-city-route-travel-and-signal-on-the-application-free-photo.jpg');
+    background-attachment: fixed;
+    background-position: center;
     margin: 0;
-    padding: 2rem;
-    color: #333;
+    padding: 0;
+    color: #2c3e50;
+    font-family: 'Inter', sans-serif;
+}
+
+body::before {
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(8px);
+    z-index: -1;
+    content: '';
 }
 
 .container {
-    background-color: white;
-    padding: 2rem;
-    border-radius: 1rem;
-    max-width: 600px;
-    margin: auto;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    margin: 60px auto;
+    padding: 48px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.8s ease forwards;
+    border: 1px solid #e3e3e3;
+    max-width: 860px;
 }
 
 h1 {
-    text-align: center;
-    color: #4a148c;
-    margin-bottom: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 32px;
+    color: #1c1c1c;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 12px;
+    font-size: 2.5rem;
 }
 
 label {
-    display: block;
-    margin-top: 1rem;
-    font-weight: bold;
+    font-size: 1rem;
+    color: #2c3e50;
+    margin-bottom: 8px;
 }
 
-select, input {
+select, input[type="number"] {
+    margin-top: 8px;
+    padding: 12px 14px;
+    border: 1px solid #bbb;
+    border-radius: 12px;
+    font-size: 1rem;
+    background-color: #ffffff;
+    transition: border 0.3s ease, box-shadow 0.2s ease;
     width: 100%;
-    padding: 0.5rem;
-    margin-top: 0.3rem;
-    border: 1px solid #ccc;
-    border-radius: 0.5rem;
-    box-sizing: border-box;
+}
+
+select:focus, input[type="number"]:focus {
+    border-color: #e74c3c;
+    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
+    outline: none;
 }
 
 button {
-    margin-top: 1.5rem;
-    width: 100%;
-    padding: 0.75rem;
-    background-color: #6a1b9a;
+    background-color: #e74c3c;
     color: white;
-    border: none;
-    border-radius: 0.5rem;
     font-size: 1rem;
+    font-weight: 600;
+    padding: 14px 28px;
+    border: none;
+    border-radius: 10px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
     cursor: pointer;
-    transition: background-color 0.3s;
+    margin-top: 16px;
 }
 
 button:hover {
-    background-color: #4a148c;
+    background-color: #c0392b;
+    transform: scale(1.03);
 }
 
 .resultado {
-    margin-top: 2rem;
-    padding: 1rem;
-    background-color: #f3e5f5;
-    border-left: 5px solid #6a1b9a;
-    border-radius: 0.5rem;
+    margin-top: 24px;
+    font-size: 1rem;
+    color: #34495e;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
 }
