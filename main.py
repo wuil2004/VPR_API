@@ -4,8 +4,6 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import math
 from operator import itemgetter
-from fastapi.encoders import jsonable_encoder
-import json
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -124,7 +122,6 @@ async def generar_rutas(
 ):
     almacen = coord[origen]
     rutas = vrp_voraz(almacen, max_carga, max_distancia, max_gasolina)
-
     resultados = []
     for i, ruta in enumerate(rutas, 1):
         dist = distancia_ruta(ruta, almacen)
@@ -136,11 +133,12 @@ async def generar_rutas(
             "distancia": f"{dist:.2f}",
             "gasolina": f"{gas:.2f}"
         })
-
     return templates.TemplateResponse("index.html", {
         "request": request,
         "ciudades": list(coord.keys()),
         "resultados": resultados,
-        "coordenadas_json": json.dumps(coord),
-        "rutas_coords_json": json.dumps([r["ruta"] for r in resultados])
+        "origen": origen,
+        "max_carga": max_carga,
+        "max_distancia": max_distancia,
+        "max_gasolina": max_gasolina
     })
