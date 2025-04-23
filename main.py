@@ -39,25 +39,25 @@ def en_ruta(rutas, c):
 def peso_ruta(ruta):
     return sum(pedidos[c] for c in ruta)
 
-def distancia_ruta(ruta, almacen):
-    total = distancia(almacen, coord[ruta[0]])
+def distancia_ruta_con_destino(ruta, origen, destino):
+    total = distancia(origen, coord[ruta[0]])
     for i in range(len(ruta)-1):
         total += distancia(coord[ruta[i]], coord[ruta[i+1]])
-    total += distancia(coord[ruta[-1]], almacen)
+    total += distancia(coord[ruta[-1]], destino)
     return total
 
 def consumo_gasolina(distancia):
     return distancia / 10  # 10 km por litro
 
-def vrp_voraz(almacen, max_carga, max_distancia, max_gasolina):
+def vrp_voraz_con_destino(origen, destino, max_carga, max_distancia, max_gasolina):
     s = {}
     for c1 in coord:
         for c2 in coord:
             if c1 != c2 and not (c2, c1) in s:
                 d_c1_c2 = distancia(coord[c1], coord[c2])
-                d_c1_almacen = distancia(coord[c1], almacen)
-                d_c2_almacen = distancia(coord[c2], almacen)
-                s[c1, c2] = d_c1_almacen + d_c2_almacen - d_c1_c2
+                d_c1_origen = distancia(coord[c1], origen)
+                d_c2_destino = distancia(coord[c2], destino)
+                s[c1, c2] = d_c1_origen + d_c2_destino - d_c1_c2
     s = sorted(s.items(), key=itemgetter(1), reverse=True)
 
     rutas = []
@@ -66,7 +66,7 @@ def vrp_voraz(almacen, max_carga, max_distancia, max_gasolina):
         rc2 = en_ruta(rutas, k[1])
 
         def validar_y_agregar(nueva_ruta):
-            d = distancia_ruta(nueva_ruta, almacen)
+            d = distancia_ruta_con_destino(nueva_ruta, origen, destino)
             if (peso_ruta(nueva_ruta) <= max_carga and
                 d <= max_distancia and
                 consumo_gasolina(d) <= max_gasolina):
@@ -105,26 +105,37 @@ def vrp_voraz(almacen, max_carga, max_distancia, max_gasolina):
                 rutas.append(nueva)
     return rutas
 
+
 @app.get("/", response_class=HTMLResponse)
 def form(request: Request):
     return templates.TemplateResponse("index.html", {
         "request": request,
-        "ciudades": list(coord.keys())
+        "ciudades": list(coord.keys()),
+        "origen": None,
+        "destino": None,
+        "max_carga": None,
+        "max_distancia": None,
+        "max_gasolina": None
     })
+
 
 @app.post("/rutas", response_class=HTMLResponse)
 async def generar_rutas(
     request: Request,
     origen: str = Form(...),
+    destino: str = Form(...),
     max_carga: int = Form(...),
     max_distancia: float = Form(...),
     max_gasolina: float = Form(...)
 ):
     almacen = coord[origen]
-    rutas = vrp_voraz(almacen, max_carga, max_distancia, max_gasolina)
+    ciudad_final = coord[destino]
+
+    rutas = vrp_voraz_con_destino(almacen, ciudad_final, max_carga, max_distancia, max_gasolina)
+
     resultados = []
     for i, ruta in enumerate(rutas, 1):
-        dist = distancia_ruta(ruta, almacen)
+        dist = distancia_ruta_con_destino(ruta, almacen, ciudad_final)
         gas = consumo_gasolina(dist)
         resultados.append({
             "id": i,
@@ -133,11 +144,13 @@ async def generar_rutas(
             "distancia": f"{dist:.2f}",
             "gasolina": f"{gas:.2f}"
         })
+
     return templates.TemplateResponse("index.html", {
         "request": request,
         "ciudades": list(coord.keys()),
         "resultados": resultados,
         "origen": origen,
+        "destino": destino,
         "max_carga": max_carga,
         "max_distancia": max_distancia,
         "max_gasolina": max_gasolina

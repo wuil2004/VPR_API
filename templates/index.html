@@ -11,27 +11,36 @@
     <h1 class="titulo">Planificador de Rutas</h1>
     <form method="post" action="/rutas" class="formulario">
         <label class="campo">
-        Ciudad de Origen:
-        <select name="origen" class="entrada">
-            {% for ciudad in ciudades %}
-            <option value="{{ ciudad }}" {% if ciudad == origen %}selected{% endif %}>{{ ciudad }}</option>
-            {% endfor %}
-        </select>
+            Ciudad de Origen:
+            <select name="origen" class="entrada">
+                {% for ciudad in ciudades %}
+                <option value="{{ ciudad }}" {% if ciudad == origen %}selected{% endif %}>{{ ciudad }}</option>
+                {% endfor %}
+            </select>
         </label>
 
         <label class="campo">
-        Máximo de paquetes:
-        <input name="max_carga" type="number" required class="entrada" value="{{ max_carga if max_carga is defined else '' }}" />
+            Ciudad de Destino:
+            <select name="destino" class="entrada">
+                {% for ciudad in ciudades %}
+                <option value="{{ ciudad }}" {% if ciudad == destino %}selected{% endif %}>{{ ciudad }}</option>
+                {% endfor %}
+            </select>
         </label>
 
         <label class="campo">
-        Máxima distancia:
-        <input name="max_distancia" type="number" step="0.1" required class="entrada" value="{{ max_distancia if max_distancia is defined else '' }}" />
+            Máximo de paquetes:
+            <input name="max_carga" type="number" required class="entrada" value="{{ max_carga or '' }}" />
         </label>
 
         <label class="campo">
-        Máxima gasolina:
-        <input name="max_gasolina" type="number" step="0.1" required class="entrada" value="{{ max_gasolina if max_gasolina is defined else '' }}" />
+            Máxima distancia:
+            <input name="max_distancia" type="number" step="0.1" required class="entrada" value="{{ max_distancia or '' }}" />
+        </label>
+
+        <label class="campo">
+            Máxima gasolina:
+            <input name="max_gasolina" type="number" step="0.1" required class="entrada" value="{{ max_gasolina or '' }}" />
         </label>
 
         <button class="boton">Generar rutas</button>
