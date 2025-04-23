@@ -2,48 +2,67 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Planificador de Rutas</title>
+  <title>Optimizador de Rutas</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 text-gray-800">
-  <div class="max-w-3xl mx-auto p-6 bg-white shadow-xl rounded mt-10">
-    <h1 class="text-2xl font-bold mb-4">Planificador de Rutas</h1>
-    <form method="post" action="/rutas" class="space-y-4">
+<body class="bg-gray-100 text-gray-900 p-6">
+  <div class="max-w-3xl mx-auto bg-white p-6 rounded shadow">
+    <h1 class="text-2xl font-bold mb-4">Generador de Rutas de Entrega</h1>
+    <form action="/rutas" method="post" class="space-y-4">
       <label class="block">
         Ciudad de Origen:
         <select name="origen" class="border p-2 rounded w-full">
           {% for ciudad in ciudades %}
-          <option value="{{ ciudad }}">{{ ciudad }}</option>
+          <option value="{{ ciudad }}" {% if ciudad == origen %}selected{% endif %}>{{ ciudad }}</option>
           {% endfor %}
         </select>
       </label>
+
+      <label class="block">
+        Ciudades de Destino (Ctrl + clic para varias):
+        <select name="destinos" multiple required class="border p-2 rounded w-full h-40">
+          {% for ciudad in ciudades %}
+          <option value="{{ ciudad }}" {% if ciudad in destinos %}selected{% endif %}>{{ ciudad }}</option>
+          {% endfor %}
+        </select>
+      </label>
+
       <label class="block">
         Máximo de paquetes:
-        <input name="max_carga" type="number" required class="border p-2 rounded w-full" />
+        <input type="number" name="max_carga" value="{{ max_carga }}" required class="border p-2 rounded w-full">
       </label>
+
       <label class="block">
-        Máxima distancia:
-        <input name="max_distancia" type="number" step="0.1" required class="border p-2 rounded w-full" />
+        Distancia máxima (aprox):
+        <input type="number" step="0.01" name="max_distancia" value="{{ max_distancia }}" required class="border p-2 rounded w-full">
       </label>
+
       <label class="block">
-        Máxima gasolina:
-        <input name="max_gasolina" type="number" step="0.1" required class="border p-2 rounded w-full" />
+        Gasolina máxima (litros):
+        <input type="number" step="0.01" name="max_gasolina" value="{{ max_gasolina }}" required class="border p-2 rounded w-full">
       </label>
-      <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Generar rutas</button>
+
+      <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">Calcular Rutas</button>
     </form>
 
     {% if resultados %}
-      <h2 class="text-xl font-semibold mt-8">Rutas Generadas:</h2>
-      <ul class="mt-4 space-y-4">
-        {% for r in resultados %}
-        <li class="border p-4 rounded shadow-sm">
-          <strong>Ruta {{ r.id }}:</strong> {{ r.ruta }}<br/>
-          Peso: {{ r.peso }}<br/>
-          Distancia: {{ r.distancia }}<br/>
-          Gasolina: {{ r.gasolina }} Lts
-        </li>
-        {% endfor %}
-      </ul>
+    <div class="mt-6">
+      <h2 class="text-xl font-bold mb-2">Rutas generadas:</h2>
+      {% if resultados == "No se encontraron rutas que cumplieran con los requisitos." %}
+      <div class="bg-red-100 p-4 rounded mb-2 shadow text-red-600">
+        {{ resultados }}
+      </div>
+      {% else %}
+      {% for ruta in resultados %}
+      <div class="bg-gray-100 p-4 rounded mb-2 shadow">
+        <strong>Ruta {{ ruta.id }}:</strong> {{ ruta.ruta | join(', ') }}<br>
+        Peso total: {{ ruta.peso }} paquetes<br>
+        Distancia: {{ ruta.distancia }} km<br>
+        Gasolina: {{ ruta.gasolina }} Lts
+      </div>
+      {% endfor %}
+      {% endif %}
+    </div>
     {% endif %}
   </div>
 </body>
