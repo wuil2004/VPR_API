@@ -135,6 +135,6 @@ async def generar_rutas(
         })
     return templates.TemplateResponse("index.html", {
         "request": request,
-        "ciudades": list(coord.keys())
+        "ciudades": list(coord.keys()),
         "resultados": resultados
     })
